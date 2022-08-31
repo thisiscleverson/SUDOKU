@@ -8,8 +8,8 @@ const sudokuGame = {
     generateTable: function(height, width){
 
         var amountOfSquare = (height*width)/9; // definir a quantidade de quadrados que deve ser gerado
-        
-        //colocar o novo quadrado na tabela
+
+        // colocar o novo quadrado na tabela
         for(var i=0; i < amountOfSquare; i++){ 
             this.board.push(this.child_square)
         }
