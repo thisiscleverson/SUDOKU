@@ -1,48 +1,62 @@
 
-
 const sudokuGame = {
 
     board: [],
-    child_square: ['0','0','0','0','0','0','0','0','0'], // tabuleiro vazio
-
+    
     generateTable: function(height, width){
 
-        var amountOfSquare = (height*width)/9; // definir a quantidade de quadrados que deve ser gerado
+        let amountOfSquare = (height*width)/9; // define the amount of squares that must be generated
 
-        // colocar o novo quadrado na tabela
-        for(var i=0; i < amountOfSquare; i++){ 
-            this.board.push(this.child_square)
+        function checkSquare(board, square){
+            for(let i=0; i<board.length;i++){
+                for(r=0; r<9; r++){
+                    if(square[r] == board[i][r] && square[r] > 0){
+                        return;
+                    }
+                }
+            }
+
+            board.push(square)
         }
+    
+
+        while(this.board.length < amountOfSquare){
+            const square = this.generateNumbers()
+            
+            if(this.board.length === 0){
+                this.board.push(square)
+            }else{
+                checkSquare(this.board, square)
+            }
+        }
+
+
     },
 
 
     generateNumbers: function(){
-        var i = 0;
-        var limit = Math.floor(Math.random() * (9 - 2) + 2) 
+        let square = ['0','0','0','0','0','0','0','0','0']
+        let i = 0;
+        let limit = Math.floor(Math.random() * (9 - 2) + 2) 
 
         while(i < limit){
-            var position = Math.floor(Math.random() * (10 - 1) + 1) // generate the position where the element will be placed
-            var element  = Math.floor(Math.random() * (10 - 1) + 1) // numbers
+            let position = Math.floor(Math.random() * (10 - 1) + 1) // generate the position where the element will be placed
+            let element  = Math.floor(Math.random() * (10 - 1) + 1) // numbers
 
             // Verify that the generated number is not in the table
             // check also if the position where the generated number is free to be placed
-            if(!this.board.includes(`${element}`) && this.board[position] == '0'){
-                this.board[position] = `${element}`
+            if(!square.includes(`${element}`) && square[position] == '0'){
+                square[position] = `${element}`
                 i++
             }
         }
+
+        return square;
     },
 
-
-    initTest: function(){
-        this.generateTable(6,6)
-        //this.generateNumbers()
-    
-        console.log(this.board)
-    }
 
 }
 
 
-sudokuGame.initTest()
+
 
