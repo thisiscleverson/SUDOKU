@@ -1,0 +1,24 @@
+table {
+    margin:4em auto;
+  }
+  td {
+    height: 3rem;
+    width:3rem;
+    border:1px solid;
+    text-align:center;
+    
+    display: table-cell;
+	vertical-align: middle;
+  }
+  td:first-child {
+    border-left:solid;
+  }
+  td:nth-child(3n) {
+    border-right:solid ;
+  }
+  tr:first-child {
+    border-top:solid;
+  }
+  tr:nth-child(3n) td {
+    border-bottom:solid ;
+  }
