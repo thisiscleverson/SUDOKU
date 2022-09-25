@@ -18,10 +18,31 @@ const sudokuGame = {
 
             board.push(square)
         }
+
+
+        function generateNumbers(){
+            let square = ['0','0','0','0','0','0','0','0','0']
+            let i = 0;
+            let limit = Math.floor(Math.random() * (9 - 2) + 2) 
+    
+            while(i < limit){
+                let position = Math.floor(Math.random() * (10 - 1) + 1) // generate the position where the element will be placed
+                let element  = Math.floor(Math.random() * (10 - 1) + 1) // numbers
+    
+                // Verify that the generated number is not in the table
+                // check also if the position where the generated number is free to be placed
+                if(!square.includes(`${element}`) && square[position] == '0'){
+                    square[position] = `${element}`
+                    i++
+                }
+            }
+    
+            return square;
+        }
     
 
         while(this.board.length < amountOfSquare){
-            const square = this.generateNumbers()
+            const square = generateNumbers()
             
             if(this.board.length === 0){
                 this.board.push(square)
@@ -30,32 +51,31 @@ const sudokuGame = {
             }
         }
 
-
     },
 
 
-    generateNumbers: function(){
-        let square = ['0','0','0','0','0','0','0','0','0']
-        let i = 0;
-        let limit = Math.floor(Math.random() * (9 - 2) + 2) 
+    startGame: function(){
+        this.generateTable(6,6)
+        
+        let content = '';
 
-        while(i < limit){
-            let position = Math.floor(Math.random() * (10 - 1) + 1) // generate the position where the element will be placed
-            let element  = Math.floor(Math.random() * (10 - 1) + 1) // numbers
-
-            // Verify that the generated number is not in the table
-            // check also if the position where the generated number is free to be placed
-            if(!square.includes(`${element}`) && square[position] == '0'){
-                square[position] = `${element}`
-                i++
+        for(let i=0; i<this.board.length; i++){
+            content += '<div class="squared">'
+            for(let r=0; r<9; r++){
+                content += '<div>'+this.board[i][r]+'</div>'
             }
+            content += '</div>'
         }
-
-        return square;
-    },
-
+        
+        document.querySelector('.board').innerHTML = content;
+    }
 
 }
+
+sudokuGame.generateTable(6,6)
+console.log(sudokuGame.board)
+
+
 
 
 
