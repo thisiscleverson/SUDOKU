@@ -55,16 +55,16 @@ const sudokuGame = {
 
 
     startGame: function(){
-        this.generateTable(6,6)
+        this.generateTable(9,9)
         
         let content = '';
 
         for(let i=0; i<this.board.length; i++){
-            content += '<div class="squared">'
+            content += '<tr class="row">'
             for(let r=0; r<9; r++){
-                content += '<div>'+this.board[i][r]+'</div>'
+                content += '<td class="cell">'+this.board[i][r]+'</td>'
             }
-            content += '</div>'
+            content += '</tr>'
         }
         
         document.querySelector('.board').innerHTML = content;
