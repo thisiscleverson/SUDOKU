@@ -1,100 +1,130 @@
-
-const sudokuGame = {
-
-    board: [],
-    
-    generateTable: function(height, width){
-
-        let amountOfSquare = (height*width)/9; // define the amount of squares that must be generated
-
-        function checkSquare(board, row){
-
-            // Check if there are numbers recessed on the same line and column
-            for(let i=0; i<board.length;i++){
-                for(r=0; r<9; r++){
-                    if(row[r] == board[i][r] && row[r] > 0){
-                        return;
-                    }
-                }
-            }
-
-            //verificar se em um quadrado tem elementos repetidos
-            if(board.length >= 2){
-
-                for(let i=0; i<3; i++){
-
-                    console.log(board[0].some(el => {
-                        if(board[1].slice(0,3).includes(el) && row.slice(0,3).includes(el) && el != '') {
-                            console.log('elemento: '+el)
-                            console.log('board 1: '+board[0])
-                            console.log('board 2: '+board[1])
-                            console.log('row: '+row)
-                            return;
-                          }
-                    }))
-                }
-            }
-
-            board.push(row)
-        }
+const table = document.querySelector('.board')
 
 
-        function generateNumbers(){
-            let row = ['','','','','','','','','']
-            let i = 0;
-            let limit = Math.floor(Math.random() * (9 - 2) + 2) 
-    
-            while(i < limit){
-                let position = Math.floor(Math.random() * (10 - 1) + 1) // generate the position where the element will be placed
-                let element  = Math.floor(Math.random() * (10 - 1) + 1) // numbers
-    
-                // Verify that the generated number is not in the table
-                // check also if the position where the generated number is free to be placed
-                if(!row.includes(`${element}`) && row[position] == ''){
-                    row[position] = `${element}`
-                    i++
-                }
-            }
-            return row;
-        }
+let hight = 9
+let width = 9
+
+// Objetos
+const SUDOKU = {
+
+    board: [
+        '','','','','','','','','',
+        '','','','','','','','','',
+        '','','','','','','','','',
+        '','','','','','','','','',
+        '','','','','','','','','',
+        '','','','','','','','','',
+        '','','','','','','','','',
+        '','','','','','','','','',
+        '','','','','','','','','',
+    ], // tabuleiro
 
 
-        while(this.board.length < amountOfSquare){
-            const row = generateNumbers()
-            
-            if(this.board.length === 0){
-                this.board.push(row)
-            }else{
-                checkSquare(this.board, row)
-            }
-        }
+    difficulty: {
+        Easy:   36,
+        Medium: 46,
+        Hard:   56
+    },
 
+    Start: function(){ // funcção inicial do jogo
+
+        //this.DrawNumber()
+        this.BuildTheBoard()
+        this.PutElementsInHTML()
     },
 
 
-    startGame: function(){
-        this.generateTable(9,9)
-        
+    DrawNumberAndPosition: function(){ // sortear os números para o square
+        let position = Math.floor(Math.random() * ((width * hight) - 1) + 1) // gerar a posição aonde o elemento vai ficar na lista
+        let element  = Math.floor(Math.random() * (10 - 1) + 1) // sortear os números
+
+        return [position, element]
+    },
+
+
+    BuildTheBoard: function(){
+
+        // verificar se tem número repetido na mesma coluna
+        const checkColumnValues = (position, values) => {
+
+            let rowIndex    = parseInt(position / 9)           // calcular a linha apartir do index
+            let columnIndex = position - (width * rowIndex) // calculo para determinar em qual coluna deve começar a peger os valores
+
+            //pegar os valores da coluna e adicionar em um array de verificação
+            for(let row=0; row<hight; row++){
+                let index = columnIndex + (width * row)
+                if(this.board[index] == values) return true
+            }
+            
+            return false
+        }
+
+
+        //verifcar se tem número repetido na mesma linha
+        const checkRowValues = (position, values) => {
+
+            let rowIndex = parseInt(position / 9) // calcular o index da linha apartir da posição
+
+            // pegar todos os valores da linha e colocar no array de verificação
+            for(let column=0; column<width; column++){
+                let index = column + (width * rowIndex)
+                if(this.board[index] == values) return true
+            }
+
+            return false
+        }
+
+
+        const checkThreeRow = (position, values) => {
+
+            let universeSet = []
+            let rowIndex = parseInt(position / 9)           // calcular a posição da linha apartir do index
+            let columnIndex = position - (width * rowIndex) // calcular a posição da coluna apartir do index
+
+            
+            if(rowIndex < 3){
+
+            }else if(rowIndex > 3 && rowIndex < 6){
+
+            }else if(rowIndex > 6 && rowIndex < 9){
+
+            }
+
+        }
+
+
+        let i=0
+        while (true){
+            const [position, element] = this.DrawNumberAndPosition() // sotear os números e a posição
+
+            //checkThreeRow(position,element)
+
+            //verificar se pode adicionar os números no tabuleiro
+            if(!checkColumnValues(position,element) && !checkRowValues(position, element)){
+                this.board[position] = `${element}`
+                i++
+            }
+            
+
+            if(i >= this.difficulty['Easy'])break // terminar de gerar os números
+        }
+    },
+
+
+    PutElementsInHTML: function(){
+
+        const sizeBoard = this.board.length
         let content = '';
 
-        for(let i=0; i<this.board.length; i++){
-            content += '<tr class="row">'
-            for(let r=0; r<9; r++){
-                content += '<td class="cell">'+this.board[i][r]+'</td>'
+        for(let i=0; i<sizeBoard;){
+            content += '<tr>'
+            for(let n=0; n<9; n++){
+                content += `<td>${this.board[i]}</td>`
+                i++
             }
             content += '</tr>'
         }
-        
-        document.querySelector('.board').innerHTML = content;
-    }
 
+        table.innerHTML = content
+    },
 }
-
-sudokuGame.generateTable(6,6)
-//console.log(sudokuGame.board)
-
-
-
-
-
-

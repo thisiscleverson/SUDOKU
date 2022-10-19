@@ -1,7 +1,15 @@
-table {
-    margin:4em auto;
-  }
-  td {
+
+.board{
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+
+
+
+
+td{
     height: 3rem;
     width:3rem;
     border:1px solid;
@@ -9,16 +17,21 @@ table {
     
     display: table-cell;
 	vertical-align: middle;
-  }
-  td:first-child {
+}
+
+
+td:first-child {
     border-left:solid;
-  }
-  td:nth-child(3n) {
+}
+
+td:nth-child(3n) {
     border-right:solid ;
-  }
-  tr:first-child {
+}
+
+tr:first-child {
     border-top:solid;
-  }
-  tr:nth-child(3n) td {
+}
+
+tr:nth-child(3n) td {
     border-bottom:solid ;
   }
