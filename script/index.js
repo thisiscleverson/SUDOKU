@@ -2,6 +2,7 @@
 
 const table = document.querySelector('.board')
 
+let setIndex = false
 
 let hight = 9
 let width = 9
@@ -112,7 +113,7 @@ const SUDOKU = {
                 case 1:
                     for(let column=0; column<3; column++){
                         for(let row=0; row<3; row++){
-                            let index = column + (9 * row)
+                            let index = column + (width * row)
                             loadColumnValues.push(this.board[index])
                         }
                     }
@@ -121,7 +122,7 @@ const SUDOKU = {
                 case 2:
                     for(let column=3; column<6; column++){
                         for(let row=0; row<3; row++){
-                            let index = column + (9 * row)
+                            let index = column + (width * row)
                             loadColumnValues.push(this.board[index])
                         }
                     }
@@ -130,7 +131,7 @@ const SUDOKU = {
                 case 3:
                     for(let column=6; column<9; column++){
                         for(let row=0; row<3; row++){
-                            let index = column + (9 * row)
+                            let index = column + (width * row)
                             loadColumnValues.push(this.board[index])
                         }
                     }
@@ -139,7 +140,7 @@ const SUDOKU = {
                 case 4:
                     for(let column=0; column<3; column++){
                         for(let row=3; row<6; row++){
-                            let index = column + (9 * row)
+                            let index = column + (width * row)
                             loadColumnValues.push(this.board[index])
                         }
                     }
@@ -157,7 +158,7 @@ const SUDOKU = {
                 case 6:
                     for(let column=6; column<9; column++){
                         for(let row=3; row<6; row++){
-                            let index = column + (9 * row)
+                            let index = column + (width * row)
                             loadColumnValues.push(this.board[index])
                         }
                     }
@@ -166,7 +167,7 @@ const SUDOKU = {
                 case 7:
                     for(let column=0; column<3; column++){
                         for(let row=6; row<9; row++){
-                            let index = column + (9 * row)
+                            let index = column + (width * row)
                             loadColumnValues.push(this.board[index])
                         }
                     }
@@ -175,7 +176,7 @@ const SUDOKU = {
                 case 8:
                     for(let column=3; column<6; column++){
                         for(let row=6; row<9; row++){
-                            let index = column + (9 * row)
+                            let index = column + (width * row)
                             loadColumnValues.push(this.board[index])
                         }
                     }
@@ -184,7 +185,7 @@ const SUDOKU = {
                 case 9:
                     for(let column=6; column<9; column++){
                         for(let row=6; row<9; row++){
-                            let index = column + (9 * row)
+                            let index = column + (width * row)
                             loadColumnValues.push(this.board[index])
                         }
                     }
@@ -208,7 +209,7 @@ const SUDOKU = {
             }
             
 
-            if(i >= this.difficulty['Easy'])break // terminar de gerar os números
+            if(i >= (81 - this.difficulty['Easy']))break // terminar de gerar os números
         }
     },
 
@@ -221,7 +222,12 @@ const SUDOKU = {
         for(let i=0; i<sizeBoard;){
             content += '<tr>'
             for(let n=0; n<9; n++){
-                this.board[i] != ''?content += `<td class='cell'> <div class='index'> ${i}</div> ${this.board[i]}</td>`:content += `<td> <div class='index'> ${i} </div> ${this.board[i]}</td>`
+                if(setIndex){
+                    this.board[i] != ''?content += `<td class='cell'> <div class='index'> ${i}</div> ${this.board[i]}</td>`:content += `<td> <div class='index'> ${i} </div> ${this.board[i]}</td>`
+                }else{
+                    this.board[i] != ''?content += `<td class='cell'> ${this.board[i]}</td>`:content += `<td> ${this.board[i]}</td>`
+                }
+                
                 i++
             }
             content += '</tr>'
