@@ -191,7 +191,6 @@ const SUDOKU = {
                 break;
             }   
 
-            console.log(position, values, loadColumnValues)
             return loadColumnValues.includes(`${values}`) // verificar se tem número repetidos e retonar um [true] ou [false] como resposta
 
         }
@@ -222,7 +221,7 @@ const SUDOKU = {
         for(let i=0; i<sizeBoard;){
             content += '<tr>'
             for(let n=0; n<9; n++){
-                this.board[i] != ''?content += `<td class='cell'>${this.board[i]}</td>`:content += `<td>${this.board[i]}</td>`
+                this.board[i] != ''?content += `<td class='cell'> <div class='index'> ${i}</div> ${this.board[i]}</td>`:content += `<td> <div class='index'> ${i} </div> ${this.board[i]}</td>`
                 i++
             }
             content += '</tr>'
