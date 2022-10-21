@@ -1,3 +1,5 @@
+
+
 const table = document.querySelector('.board')
 
 
@@ -25,6 +27,7 @@ const SUDOKU = {
         Medium: 46,
         Hard:   56
     },
+
 
     Start: function(){ // funcção inicial do jogo
 
@@ -75,20 +78,121 @@ const SUDOKU = {
         }
 
 
-        const checkThreeRow = (position, values) => {
+        const checkSquareElements = (position, values) => {
 
-            let universeSet = []
-            let rowIndex = parseInt(position / 9)           // calcular a posição da linha apartir do index
+            // sequência em que vai ser verificado se o index (posição aonde o n° vai ser colocado) 
+            // em qual área (quadrado do sudoku) ele pertenci
+            const areaSequence = [
+                [2,2],
+                [2,5],
+                [2,8],
+                [5,2],
+                [5,5],
+                [5,8],
+                [8,2],
+                [8,5],
+                [8,8],
+            ]
+
+            //verificar a sequência da área (quadrado do sudoku)
+            const checkSequence = () => {
+                for(let i=0; i<areaSequence.length; i++){
+                    if(rowIndex <= areaSequence[i][0] && columnIndex <= areaSequence[i][1]){
+                        return i + 1
+                    }
+                }
+            }
+
+            let loadColumnValues = []                       // memoria que vai carregar os elementos para verificação
+            let rowIndex    = parseInt(position / 9)        // calcular a posição da linha apartir do index
             let columnIndex = position - (width * rowIndex) // calcular a posição da coluna apartir do index
 
-            
-            if(rowIndex < 3){
 
-            }else if(rowIndex > 3 && rowIndex < 6){
+            switch(checkSequence()){
+                case 1:
+                    for(let column=0; column<3; column++){
+                        for(let row=0; row<3; row++){
+                            let index = column + (9 * row)
+                            loadColumnValues.push(this.board[index])
+                        }
+                    }
+                break;
 
-            }else if(rowIndex > 6 && rowIndex < 9){
+                case 2:
+                    for(let column=3; column<6; column++){
+                        for(let row=0; row<3; row++){
+                            let index = column + (9 * row)
+                            loadColumnValues.push(this.board[index])
+                        }
+                    }
+                break;
+                
+                case 3:
+                    for(let column=6; column<9; column++){
+                        for(let row=0; row<3; row++){
+                            let index = column + (9 * row)
+                            loadColumnValues.push(this.board[index])
+                        }
+                    }
+                break;
 
-            }
+                case 4:
+                    for(let column=0; column<3; column++){
+                        for(let row=3; row<6; row++){
+                            let index = column + (9 * row)
+                            loadColumnValues.push(this.board[index])
+                        }
+                    }
+                break;
+
+                case 5:
+                    for(let column=3; column<6; column++){
+                        for(let row=3; row<6; row++){
+                            let index = column + (9 * row)
+                            loadColumnValues.push(this.board[index])
+                        }
+                    }
+                break;
+
+                case 6:
+                    for(let column=6; column<9; column++){
+                        for(let row=3; row<6; row++){
+                            let index = column + (9 * row)
+                            loadColumnValues.push(this.board[index])
+                        }
+                    }
+                break;
+
+                case 7:
+                    for(let column=0; column<3; column++){
+                        for(let row=6; row<9; row++){
+                            let index = column + (9 * row)
+                            loadColumnValues.push(this.board[index])
+                        }
+                    }
+                break;
+
+                case 8:
+                    for(let column=3; column<6; column++){
+                        for(let row=6; row<9; row++){
+                            let index = column + (9 * row)
+                            loadColumnValues.push(this.board[index])
+                        }
+                    }
+                break;
+
+                case 9:
+                    for(let column=6; column<9; column++){
+                        for(let row=6; row<9; row++){
+                            let index = column + (9 * row)
+                            loadColumnValues.push(this.board[index])
+                        }
+                    }
+                break;
+            }   
+
+            console.log(position, values, loadColumnValues)
+            return loadColumnValues.includes(`${values}`) // verificar se tem número repetidos e retonar um [true] ou [false] como resposta
 
         }
 
@@ -97,10 +201,9 @@ const SUDOKU = {
         while (true){
             const [position, element] = this.DrawNumberAndPosition() // sotear os números e a posição
 
-            //checkThreeRow(position,element)
 
             //verificar se pode adicionar os números no tabuleiro
-            if(!checkColumnValues(position,element) && !checkRowValues(position, element)){
+            if(!checkColumnValues(position,element) && !checkRowValues(position, element) && !checkSquareElements(position,element)){
                 this.board[position] = `${element}`
                 i++
             }
@@ -119,7 +222,7 @@ const SUDOKU = {
         for(let i=0; i<sizeBoard;){
             content += '<tr>'
             for(let n=0; n<9; n++){
-                content += `<td>${this.board[i]}</td>`
+                this.board[i] != ''?content += `<td class='cell'>${this.board[i]}</td>`:content += `<td>${this.board[i]}</td>`
                 i++
             }
             content += '</tr>'
