@@ -2,12 +2,46 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik+Moonrocks&display=swap');
 
 
+.container{
+    display: flex;
+    /*width: 100%;*/
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    
+    margin-left: 1rem;
+    margin-right: 1rem;
+    
+}
+
+.box{
+    
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    
+    width: 28rem;
+    background-color: rgba(180, 180, 180, 0.623);
+    padding: 10px 0;
+
+    border: 1px solid #999;
+    border-radius: 10px;
+}
+
 h1{
     font-family:Arial, Helvetica, sans-serif;
-    font-size: 40px;
+    font-size: 25px;
     font-weight: 700;
-    margin-top: 20px;
-    margin-left: 1rem;
+    margin-left: 25px;
+    margin-right: 10px;
+}
+
+span{
+    font-family:Arial, Helvetica, sans-serif;
+    font-size: 25px;
+    font-weight: 700;
+    margin-left: 10px;
+    margin-right: 25px;
 }
 
 
@@ -30,6 +64,9 @@ td{
 	vertical-align: middle;
 
     position: relative;
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
 }
 
 .index{
@@ -101,7 +138,6 @@ tr:nth-child(3n) td {
     font-weight: 600;
 
     text-align: center;
-    
 }
 
 
