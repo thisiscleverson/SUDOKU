@@ -287,18 +287,40 @@ const SUDOKU = {
                 chosenNumber     = event.getAttribute('data-values')
                 tagClickedNumPad = event
                 event.style.backgroundColor = 'rgba(99, 227, 236, 0.678)'
+
+                if(tagClicked != ''){
+                    if(chosenNumber != 'x'){
+                        tagClicked.innerHTML   = `${chosenNumber}`
+                        SUDOKU.board[tagIndex] = `${chosenNumber}`
+                    }else{
+                        tagClicked.innerHTML   = ''
+                        SUDOKU.board[tagIndex] = ''
+                    }
+                }
+                
             },
             secondSelected_Numpad(event){
                 chosenNumber = event.getAttribute('data-values')
                 tagClickedNumPad.style.backgroundColor = 'rgba(180, 180, 180, 0.623)'
                 tagClickedNumPad = event
                 event.style.backgroundColor = 'rgba(99, 227, 236, 0.678)'
+                
+                if(tagClicked != ''){
+                    if(chosenNumber != 'x'){
+                        tagClicked.innerHTML   = `${chosenNumber}`
+                        SUDOKU.board[tagIndex] = `${chosenNumber}`
+                    }else{
+                        tagClicked.innerHTML   = ''
+                        SUDOKU.board[tagIndex] = ''
+                    }
+                }
             },
             removeSelected_Numpad(event){
                 event.style.backgroundColor = 'rgba(180, 180, 180, 0.623)'
                 tagClickedNumPad = ''
                 if(tagClicked != ''){
                     SUDOKU.GameControls.ClickAction.removeSelected(event)
+                    chosenNumber = ''
                 }
             },
         },
@@ -355,5 +377,12 @@ const SUDOKU = {
             })
         },
 
+    },
+
+
+    setTime(){
+        
     }
+
+
 }
