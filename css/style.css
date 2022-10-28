@@ -1,14 +1,23 @@
 
-.board{
-    display: flex;
-    justify-content: center;
-    margin-top: 3rem;
+@import url('https://fonts.googleapis.com/css2?family=Rubik+Moonrocks&display=swap');
+
+
+h1{
+    font-family:Arial, Helvetica, sans-serif;
+    font-size: 40px;
+    font-weight: 700;
+    margin-top: 20px;
     margin-left: 1rem;
-    margin-right: 1rem;
 }
 
 
-
+.board{
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
 
 
 td{
@@ -32,7 +41,6 @@ td{
     color: #999;
 }
 
-
 td:first-child {
     border-left:solid;
 }
@@ -46,10 +54,57 @@ tr:first-child {
 }
 
 tr:nth-child(3n) td {
-    border-bottom:solid ;
-  }
+    border-bottom:solid;
+}
 
-.cell{
+  
+#cell{
     background-color: rgb(230, 230, 230);
 }
+
+.colorSelected{
+    background-color: rgba(99, 227, 236, 0.678);
+}
+
+
+.numpad{
+    display: flex;
+    flex-direction: column;
+    
+    margin-top: 25px;
+    margin-bottom: 10px;
+
+    margin-left: 1rem;
+    margin-right: 1rem;
+
+}
+
+.numpad-container{
+    display: flex;
+    justify-content: center;
+
+}
+
+.numpad-item{
+
+    width: 5rem;
+    height: 2rem;
+    margin: 10px 5px;
+    padding-top: 20px;
+    padding-bottom: 15px;
+    border-radius: 10px;
+    
+    background-color: rgba(180, 180, 180, 0.623);
+
+    font-family:Arial, Helvetica, sans-serif;
+    font-size: 25px;
+    font-weight: 600;
+
+    text-align: center;
+    
+}
+
+
+
+
 
