@@ -2,6 +2,7 @@
 
 const getTable = document.querySelector('.board')
 const numpad   = document.querySelector('.numpad')
+const timer    = document.querySelector('.timer')
 
 
 let setIndex = false // mostrar o index dos elementos no tabuleiro
@@ -43,6 +44,7 @@ const SUDOKU = {
         //this.DrawNumber()
         this.BuildTheBoard()
         this.PutElementsInHTML()
+        this.startTimer()
     },
 
 
@@ -380,8 +382,11 @@ const SUDOKU = {
     },
 
 
-    setTime(){
-        
+    startTimer(){
+        setInterval(() => {
+            const currentTimer = +timer.innerHTML
+            timer.innerHTML = `${currentTimer + 1}`
+        },1000)
     }
 
 
