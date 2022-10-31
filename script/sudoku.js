@@ -1,20 +1,31 @@
+/*
+    SUDOKU GAME
 
+    A GAME MAKE WITH JAVASCRIPT, HTML AND CSS.
 
-const getTable = document.querySelector('.board')
-const numpad   = document.querySelector('.numpad')
-const timer    = document.querySelector('.timer')
+    repositories: https://github.com/thisiscleverson/SUDOKU
+    GITHUB-PAGES: https://thisiscleverson.github.io/SUDOKU/
+    TWITTER: @cl3verson3_
+    E-MAIL: 
+*/
 
+const getTable  = document.querySelector('.board')
+const numpad    = document.querySelector('.numpad')
 
-let setIndex = false // mostrar o index dos elementos no tabuleiro
+const minutes_span  = document.querySelector('.minutes')
+const seconds_span  = document.querySelector('.seconds')
+
 
 let hight = 9
 let width = 9
-
+let setIndex         = false  // mostrar o index dos elementos no tabuleiro
 let tagClicked       = '' 
 let tagClickedNumPad = ''
+let chosenNumber     = ''
+let secondsAmount    = 0
+let onTimer          = true      
+let tagIndex
 
-let tagIndex      
-let chosenNumber = ''
 
 // Objetos
 const SUDOKU = {
@@ -39,7 +50,7 @@ const SUDOKU = {
     },
 
 
-    Start: function(){ // funcção inicial do jogo
+    Start(){ // funcção inicial do jogo
 
         //this.DrawNumber()
         this.BuildTheBoard()
@@ -93,7 +104,8 @@ const SUDOKU = {
 
             // sequência em que vai ser verificado se o index (posição aonde o n° vai ser colocado) 
             // em qual área (quadrado do sudoku) ele pertenci
-            const areaSequence = [
+            // [row, column]
+            const areaSequence = [ 
                 [2,2],
                 [2,5],
                 [2,8],
@@ -105,7 +117,7 @@ const SUDOKU = {
                 [8,8],
             ]
 
-            //verificar a sequência da área (quadrado do sudoku)
+            //verificar em qual sequência da área (quadrados do sudoku) está
             const checkSequence = () => {
                 for(let i=0; i<areaSequence.length; i++){
                     if(rowIndex <= areaSequence[i][0] && columnIndex <= areaSequence[i][1]){
@@ -219,7 +231,7 @@ const SUDOKU = {
             }
             
 
-            if(i >= (81 - this.difficulty['Easy']))break // terminar de gerar os números
+            if(i >= (81 - this.difficulty['Easy'])) break // terminar de gerar os números
         }
     },
 
@@ -250,10 +262,17 @@ const SUDOKU = {
 
     GameControls: {
 
+        selectedNumbers(number){
+            console.log(getTable.target.innerHTML)
+        },
+
+
         ClickAction:{
             firstSelected(event){
+
+                SUDOKU.GameControls.selectedNumbers(0)
                 tagClicked = event
-                tagIndex   = event.getAttribute('data-index')
+                tagIndex   = event.getAttribute('data-index') // pegar o index da tag [td]
 
                 if(chosenNumber != 'x'){
                     event.innerHTML        = `${chosenNumber}`
@@ -264,10 +283,12 @@ const SUDOKU = {
                 }
                 event.classList.add('colorSelected')
             },
+
+
             secondSelected(event){
                 tagClicked.classList.remove('colorSelected')
                 tagClicked = event
-                tagIndex   = event.getAttribute('data-index')
+                tagIndex   = event.getAttribute('data-index') // pegar o index da tag [td]
                  if(chosenNumber != 'x'){
                     event.innerHTML        = `${chosenNumber}`
                     SUDOKU.board[tagIndex] = `${chosenNumber}`
@@ -277,6 +298,8 @@ const SUDOKU = {
                 }
                 event.classList.add('colorSelected')
             },
+
+
             removeSelected(event){
                 tagClicked.classList.remove('colorSelected')
                 tagIndex   = null
@@ -288,7 +311,7 @@ const SUDOKU = {
             firstSelected_Numpad(event){
                 chosenNumber     = event.getAttribute('data-values')
                 tagClickedNumPad = event
-                event.style.backgroundColor = 'rgba(99, 227, 236, 0.678)'
+                event.style.backgroundColor = 'rgba(99, 227, 236, 0.678)' // adicionar a cor azul na área selecionada
 
                 if(tagClicked != ''){
                     if(chosenNumber != 'x'){
@@ -299,13 +322,14 @@ const SUDOKU = {
                         SUDOKU.board[tagIndex] = ''
                     }
                 }
-                
             },
+
+
             secondSelected_Numpad(event){
                 chosenNumber = event.getAttribute('data-values')
-                tagClickedNumPad.style.backgroundColor = 'rgba(180, 180, 180, 0.623)'
+                tagClickedNumPad.style.backgroundColor = 'rgba(180, 180, 180, 0.623)' // remover a cor azul na área selecionada
                 tagClickedNumPad = event
-                event.style.backgroundColor = 'rgba(99, 227, 236, 0.678)'
+                event.style.backgroundColor = 'rgba(99, 227, 236, 0.678)' // adicionar a cor azul na área selecionada
                 
                 if(tagClicked != ''){
                     if(chosenNumber != 'x'){
@@ -317,6 +341,8 @@ const SUDOKU = {
                     }
                 }
             },
+
+
             removeSelected_Numpad(event){
                 event.style.backgroundColor = 'rgba(180, 180, 180, 0.623)'
                 tagClickedNumPad = ''
@@ -326,8 +352,9 @@ const SUDOKU = {
                 }
             },
         },
+        
 
-        onClick: function(){ // selecionar as celulas do tabuleiro
+        onClick(){ // selecionar as celulas do tabuleiro
        
             getTable.addEventListener('click', ({target}) =>{
                 
@@ -344,7 +371,7 @@ const SUDOKU = {
         },
 
 
-        KeyBoardActions: function(){
+        KeyBoardActions(){
             
             const actions = (event) => {
 
@@ -363,7 +390,8 @@ const SUDOKU = {
 
         },
 
-        onClickNumPad: function(){ // selecionar as celulas do tabuleiro
+
+        onClickNumPad(){ // selecionar as celulas do tabuleiro
             
             numpad.addEventListener('click', ({target}) =>{
                 
@@ -382,10 +410,21 @@ const SUDOKU = {
     },
 
 
+    checkGain(){
+        
+    },
+
+
     startTimer(){
         setInterval(() => {
-            const currentTimer = +timer.innerHTML
-            timer.innerHTML = `${currentTimer + 1}`
+            
+            const timer = secondsAmount++
+
+            const minutes = Math.floor(timer / 60)
+            const seconds = timer % 60
+
+            minutes_span.innerHTML = String(minutes).padStart(2, '0') + 'M'
+            seconds_span.innerHTML = String(seconds).padStart(2, '0') + 'S'
         },1000)
     }
 
