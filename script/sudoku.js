@@ -9,15 +9,15 @@
     E-MAIL: 
 */
 
+
 const getTable  = document.querySelector('.board')
 const numpad    = document.querySelector('.numpad')
-
 const minutes_span  = document.querySelector('.minutes')
 const seconds_span  = document.querySelector('.seconds')
 
 
-let hight = 9
-let width = 9
+let hight            = 9
+let width            = 9
 let setIndex         = false  // mostrar o index dos elementos no tabuleiro
 let tagClicked       = '' 
 let tagClickedNumPad = ''
@@ -27,20 +27,44 @@ let onTimer          = true
 let tagIndex
 
 
-// Objetos
+
+const shuffle = (array) => {
+    let currentIndex = array.length, randomIndex
+
+    while(currentIndex != 0){
+        randomIndex = Math.floor(Math.random() * currentIndex)
+
+        currentIndex--;
+
+        [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]]
+        
+        return array
+    }
+}
+
+
 const SUDOKU = {
 
-    board: [ // tabuleiro
-        '','','','','','','','','',
-        '','','','','','','','','',
-        '','','','','','','','','',
-        '','','','','','','','','',
-        '','','','','','','','','',
-        '','','','','','','','','',
-        '','','','','','','','','',
-        '','','','','','','','','',
-        '','','','','','','','','',
-    ], 
+    Start(){ // funcção inicial do jogo
+    
+        this.createGrid()
+        this.generatorBoard.generatorGrid()
+       //this.PutElementsInHTML()
+       //this.startTimer()
+    },
+
+
+    createGrid(){
+        for(let row=0; row<9; row++){
+            this.grid.push([])
+            for(let e=0; e<9; e++){
+                this.grid[row].push(0)
+            }
+        }
+    },
+    
+    grid:   [], // tabuleiro já resolvido
+    puzzle: [], // quebra-cabeça
 
 
     difficulty: {
@@ -49,190 +73,79 @@ const SUDOKU = {
         Hard:   56
     },
 
+    
+    generatorBoard: {
 
-    Start(){ // funcção inicial do jogo
+        validLocation(row,col,number){
 
-        //this.DrawNumber()
-        this.BuildTheBoard()
-        this.PutElementsInHTML()
-        this.startTimer()
-    },
-
-
-    DrawNumberAndPosition: function(){ // sortear os números para o square
-        let position = Math.floor(Math.random() * ((width * hight) - 1) + 1) // gerar a posição aonde o elemento vai ficar na lista
-        let element  = Math.floor(Math.random() * (10 - 1) + 1) // sortear os números
-
-        return [position, element]
-    },
-
-
-    BuildTheBoard: function(){
-
-        // verificar se tem número repetido na mesma coluna
-        const checkColumnValues = (position, values) => {
-
-            let rowIndex    = parseInt(position / 9)           // calcular a linha apartir do index
-            let columnIndex = position - (width * rowIndex) // calculo para determinar em qual coluna deve começar a peger os valores
-
-            //pegar os valores da coluna e adicionar em um array de verificação
-            for(let row=0; row<hight; row++){
-                let index = columnIndex + (width * row)
-                if(this.board[index] == values) return true
-            }
-            
-            return false
-        }
-
-
-        //verifcar se tem número repetido na mesma linha
-        const checkRowValues = (position, values) => {
-
-            let rowIndex = parseInt(position / 9) // calcular o index da linha apartir da posição
-
-            // pegar todos os valores da linha e colocar no array de verificação
-            for(let column=0; column<width; column++){
-                let index = column + (width * rowIndex)
-                if(this.board[index] == values) return true
+            //verificar se tem número parecido na coluna
+            function checkColumn(){
+                for(let r=0; r<9; r++){
+                    if(SUDOKU.grid[r][col] == number) return true
+                }
+                return false
             }
 
-            return false
-        }
+            //verificar se existe número repetidos nos quadrados
+            function checkSquare(){
+                let square_row = Math.trunc(row/3) * 3
+                let square_col = Math.trunc(col/3) * 3
 
-
-        const checkSquareElements = (position, values) => {
-
-            // sequência em que vai ser verificado se o index (posição aonde o n° vai ser colocado) 
-            // em qual área (quadrado do sudoku) ele pertenci
-            // [row, column]
-            const areaSequence = [ 
-                [2,2],
-                [2,5],
-                [2,8],
-                [5,2],
-                [5,5],
-                [5,8],
-                [8,2],
-                [8,5],
-                [8,8],
-            ]
-
-            //verificar em qual sequência da área (quadrados do sudoku) está
-            const checkSequence = () => {
-                for(let i=0; i<areaSequence.length; i++){
-                    if(rowIndex <= areaSequence[i][0] && columnIndex <= areaSequence[i][1]){
-                        return i + 1
+                for(let r=square_row; r<(square_row+3); r++){
+                    for(let c=square_col; c<(square_col+3); c++){
+                        if(SUDOKU.grid == number) return true
                     }
                 }
+                return false
             }
 
-            let loadColumnValues = []                       // memoria que vai carregar os elementos para verificação
-            let rowIndex    = parseInt(position / 9)        // calcular a posição da linha apartir do index
-            let columnIndex = position - (width * rowIndex) // calcular a posição da coluna apartir do index
-
-
-            switch(checkSequence()){
-                case 1:
-                    for(let column=0; column<3; column++){
-                        for(let row=0; row<3; row++){
-                            let index = column + (width * row)
-                            loadColumnValues.push(this.board[index])
-                        }
-                    }
-                break;
-
-                case 2:
-                    for(let column=3; column<6; column++){
-                        for(let row=0; row<3; row++){
-                            let index = column + (width * row)
-                            loadColumnValues.push(this.board[index])
-                        }
-                    }
-                break;
-                
-                case 3:
-                    for(let column=6; column<9; column++){
-                        for(let row=0; row<3; row++){
-                            let index = column + (width * row)
-                            loadColumnValues.push(this.board[index])
-                        }
-                    }
-                break;
-
-                case 4:
-                    for(let column=0; column<3; column++){
-                        for(let row=3; row<6; row++){
-                            let index = column + (width * row)
-                            loadColumnValues.push(this.board[index])
-                        }
-                    }
-                break;
-
-                case 5:
-                    for(let column=3; column<6; column++){
-                        for(let row=3; row<6; row++){
-                            let index = column + (9 * row)
-                            loadColumnValues.push(this.board[index])
-                        }
-                    }
-                break;
-
-                case 6:
-                    for(let column=6; column<9; column++){
-                        for(let row=3; row<6; row++){
-                            let index = column + (width * row)
-                            loadColumnValues.push(this.board[index])
-                        }
-                    }
-                break;
-
-                case 7:
-                    for(let column=0; column<3; column++){
-                        for(let row=6; row<9; row++){
-                            let index = column + (width * row)
-                            loadColumnValues.push(this.board[index])
-                        }
-                    }
-                break;
-
-                case 8:
-                    for(let column=3; column<6; column++){
-                        for(let row=6; row<9; row++){
-                            let index = column + (width * row)
-                            loadColumnValues.push(this.board[index])
-                        }
-                    }
-                break;
-
-                case 9:
-                    for(let column=6; column<9; column++){
-                        for(let row=6; row<9; row++){
-                            let index = column + (width * row)
-                            loadColumnValues.push(this.board[index])
-                        }
-                    }
-                break;
-            }   
-
-            return loadColumnValues.includes(`${values}`) // verificar se tem número repetidos e retonar um [true] ou [false] como resposta
-
-        }
-
-
-        let i=0
-        while (true){
-            const [position, element] = this.DrawNumberAndPosition() // sotear os números e a posição
-
-
-            //verificar se pode adicionar os números no tabuleiro
-            if(!checkColumnValues(position,element) && !checkRowValues(position, element) && !checkSquareElements(position,element)){
-                this.board[position] = `${element}`
-                i++
+            if(SUDOKU.grid[row].includes(number) || checkColumn() || checkSquare()){
+                return false
             }
-            
+            return true
+        },
 
-            if(i >= (81 - this.difficulty['Easy'])) break // terminar de gerar os números
+
+        findEmptySquare(){
+            for(let r=0; r<9; r++){
+                for(let c=0; c<9; c++){
+                    if(SUDOKU.grid[r][c] == 0) return [r,c]
+                }
+            }
+            return []
+        },
+
+
+        generatorGrid(){
+            const list_number = [1,2,3,4,5,6,7,8,9]
+            let row
+            let col
+
+            for(let i=0; i<81; i++){
+                row = Math.trunc(i/9)
+                col = i%9
+
+                //verificar se a celula é igual a zera para poder colocar um número
+                if(SUDOKU.grid[row][col] == 0){
+                    shuffle(list_number) // embaralhar a lista de número
+                    for(let num=0; num<9; num++){
+                        if(this.validLocation(row, col, list_number[num])){
+                            SUDOKU.grid[row][col] = list_number[num]
+
+                            if(this.findEmptySquare() == false){
+                                return true
+                            }else if(this.generatorGrid()){
+                                return true
+                            }
+                        }
+                    }
+                    break
+                }
+            }
+            SUDOKU.grid[row][col] = 0
+            return false
         }
+
     },
 
 
@@ -262,15 +175,10 @@ const SUDOKU = {
 
     GameControls: {
 
-        selectedNumbers(number){
-            console.log(getTable.target.innerHTML)
-        },
-
 
         ClickAction:{
             firstSelected(event){
 
-                SUDOKU.GameControls.selectedNumbers(0)
                 tagClicked = event
                 tagIndex   = event.getAttribute('data-index') // pegar o index da tag [td]
 
@@ -309,6 +217,7 @@ const SUDOKU = {
 
             // ações para o botões do numpad
             firstSelected_Numpad(event){
+                console.log(getTable.getElementsByTagName('td'))
                 chosenNumber     = event.getAttribute('data-values')
                 tagClickedNumPad = event
                 event.style.backgroundColor = 'rgba(99, 227, 236, 0.678)' // adicionar a cor azul na área selecionada
@@ -430,3 +339,5 @@ const SUDOKU = {
 
 
 }
+
+console.log(SUDOKU.grid)
