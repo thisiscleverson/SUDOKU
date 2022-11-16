@@ -10,21 +10,28 @@
 */
 
 
-const getTable  = document.querySelector('.board')
-const numpad    = document.querySelector('.numpad')
+
+// tag para o jogo
+const getTable      = document.querySelector('.board')
+const numpad        = document.querySelector('.numpad')
+
+//tag para o timer
 const minutes_span  = document.querySelector('.minutes')
 const seconds_span  = document.querySelector('.seconds')
 
 
+// variavel para o tamanho do tabuleiro
 let hight            = 9
 let width            = 9
-let setIndex         = false  // mostrar o index dos elementos no tabuleiro
+
+// variavel para o controle do jogo
 let tagClicked       = '' 
 let tagClickedNumPad = ''
 let chosenNumber     = ''
-let secondsAmount    = 0
-let onTimer          = true      
 let tagIndex
+
+// timers
+let secondsAmount    = 0
 
 
 
@@ -45,35 +52,41 @@ const shuffle = (array) => {
 
 const SUDOKU = {
 
-    Start(){ // funcção inicial do jogo
-    
-        this.createGrid()
+    grid:       [], // tabuleiro já resolvido
+    puzzleGrid: [], // quebra-cabeça
+
+
+    Start(){ // função inicial do jogo
+        this.createGridAndPuzzleGrid()
         this.generatorBoard.generatorGrid()
+        this.generatorBoard.hideNumber()
+        this.generatorBoard.buildBoardInFrontend()
+
+       //this.hideNumber()
        //this.PutElementsInHTML()
        //this.startTimer()
     },
 
 
-    createGrid(){
+    createGridAndPuzzleGrid(){
+        // criar o tabuleiro para geração do sudoku  
         for(let row=0; row<9; row++){
             this.grid.push([])
             for(let e=0; e<9; e++){
                 this.grid[row].push(0)
             }
         }
-    },
-    
-    grid:   [], // tabuleiro já resolvido
-    puzzle: [], // quebra-cabeça
 
-
-    difficulty: {
-        Easy:   36,
-        Medium: 46,
-        Hard:   56
+        // criar o tabuleiro do quebra-cabeça
+        for(let row=0; row<9; row++){
+            this.puzzleGrid.push([])
+            for(let e=0; e<9; e++){
+                this.puzzleGrid[row].push('')
+            }
+        }
     },
 
-    
+
     generatorBoard: {
 
         validLocation(row,col,number){
@@ -144,32 +157,40 @@ const SUDOKU = {
             }
             SUDOKU.grid[row][col] = 0
             return false
-        }
-
-    },
+        },
 
 
-    PutElementsInHTML: function(){
-
-        const sizeBoard = this.board.length
-        let content = '';
-
-        for(let i=0; i<sizeBoard;){
-            content += '<tr>'
-            for(let n=0; n<9; n++){
-                if(setIndex){ // mostrar o index dos elemento no front-end
-                    this.board[i] != ''?content += `<td id='cell' data-index='${i}'> <div class='index'> ${i}</div> ${this.board[i]}</td>`:content += `<td data-index='${i}'> <div class='index'> ${i} </div> ${this.board[i]}</td>`
-               
-                }else{ // não mostrar o index dos elementos no front-end
-                    this.board[i] != ''?content += `<td id='cell' data-index='${i}'> ${this.board[i]}</td>`:content += `<td data-index='${i}'> ${this.board[i]}</td>`
-                }
-                
-                i++
+        hideNumber(){
+            function getPosition(){
+                let positionRow     = Math.floor(Math.random() * (9 - 1) + 1)
+                let positionElement = Math.floor(Math.random() * (9 - 1) + 1)
+                return [positionRow, positionElement]
             }
-            content += '</tr>'
+    
+            let i = 0;
+            while(i < 36){
+                let [row, element] = getPosition()
+    
+                if(SUDOKU.puzzleGrid[row][element] == ''){
+                    SUDOKU.puzzleGrid[row][element] = `${SUDOKU.grid[row][element]}`
+                    i++
+                }
+            }
+        },
+
+
+        buildBoardInFrontend(){
+            let content = '';
+            for(let i=0; i<9; i++){
+                content += '<tr>'
+                for(let n=0; n<9; n++){
+                    SUDOKU.puzzleGrid[i][n] != ''?content += `<td id='cell'> ${SUDOKU.puzzleGrid[i][n]}</td>`:content += `<td> ${SUDOKU.puzzleGrid[i][n]}</td>`
+                }
+                content += '</tr>'
+            }
+            getTable.innerHTML = content
         }
 
-        getTable.innerHTML = content
     },
 
 
@@ -319,16 +340,10 @@ const SUDOKU = {
     },
 
 
-    checkGain(){
-        
-    },
-
-
     startTimer(){
         setInterval(() => {
             
-            const timer = secondsAmount++
-
+            const timer   = secondsAmount++
             const minutes = Math.floor(timer / 60)
             const seconds = timer % 60
 
@@ -336,8 +351,6 @@ const SUDOKU = {
             seconds_span.innerHTML = String(seconds).padStart(2, '0') + 'S'
         },1000)
     }
-
-
 }
 
 console.log(SUDOKU.grid)
